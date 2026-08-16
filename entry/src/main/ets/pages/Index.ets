@@ -1,23 +1,30 @@
+import { RouterManager } from '../service/RouterManager';
+import { RouteConstants } from '../constants/RouteConstants';
+
+/**
+ * 应用入口：Navigation 容器（T1.3 路由基建）。
+ * 注入全局 NavPathStack 到 RouterManager，启动即跳转 SplashPage。
+ */
 @Entry
 @Component
 struct Index {
-  @State message: string = 'Hello World';
+  pathStack: NavPathStack = new NavPathStack();
+
+  aboutToAppear(): void {
+    RouterManager.getInstance().setStack(this.pathStack);
+  }
 
   build() {
-    RelativeContainer() {
-      Text(this.message)
-        .id('HelloWorld')
-        .fontSize($r('app.float.page_text_font_size'))
-        .fontWeight(FontWeight.Bold)
-        .alignRules({
-          center: { anchor: '__container__', align: VerticalAlign.Center },
-          middle: { anchor: '__container__', align: HorizontalAlign.Center }
-        })
-        .onClick(() => {
-          this.message = 'Welcome';
-        })
+    Navigation(this.pathStack) {
+      // 容器空内容，启动后由 SplashPage 承担分发
     }
-    .height('100%')
-    .width('100%')
+    .mode(NavigationMode.Stack)
+    .hideTitleBar(true)
+    .onAppear(() => {
+      // 延迟到页面容器就绪后跳转启动页
+      setTimeout(() => {
+        RouterManager.getInstance().clearTo(RouteConstants.SPLASH);
+      }, 0);
+    })
   }
 }
