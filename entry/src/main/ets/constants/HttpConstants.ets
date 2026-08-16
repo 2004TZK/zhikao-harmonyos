@@ -6,7 +6,11 @@ export class HttpConstants {
   /** 统一前缀 */
   static readonly API_PREFIX: string = '/api/v1';
 
-  /** 后端地址（开发环境；真机联调改为局域网 IP，如 http://192.168.x.x:8080） */
+  /**
+   * 后端地址：
+   * - 开发默认：127.0.0.1（Previewer/本机联调）
+   * - 模拟器/真机联调：改为宿主机局域网 IP，如 http://192.168.x.x:8080（已在 T10.7 模拟器验证）
+   */
   static readonly BASE_URL: string = 'http://127.0.0.1:8080' + HttpConstants.API_PREFIX;
 
   /** 请求超时（毫秒） */
