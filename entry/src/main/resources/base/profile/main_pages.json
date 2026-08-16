@@ -4,6 +4,7 @@
     "pages/SplashPage",
     "pages/LoginPage",
     "pages/RegisterPage",
+    "pages/AgreementPage",
     "pages/MainPage"
   ]
 }

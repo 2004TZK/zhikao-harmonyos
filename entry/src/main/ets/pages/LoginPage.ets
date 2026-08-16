@@ -1,9 +1,13 @@
 import { NavigationService } from '../service/NavigationService';
 import { RouteConstants } from '../constants/RouteConstants';
+import { HttpClient } from '../service/HttpClient';
+import { TokenService } from '../service/TokenService';
+import { AppStore } from '../store/AppStore';
+import { ThemeColors } from '../constants/ThemeColors';
 
 /**
- * 登录页（T1.3 占位版，完整表单校验与后端对接 T4.2 实现）。
- * 演示：登录成功后回跳受保护目标页（pushAuth 链路）。
+ * 登录页（T4.2：对接 /auth/login）。
+ * 成功：保存双 Token 与用户信息 → 标记登录态 → 返回（onPop 触发 pushAuth 继续跳转）。
  */
 @Entry
 @Component
@@ -11,16 +15,35 @@ struct LoginPage {
   @State username: string = '';
   @State password: string = '';
   @State loading: boolean = false;
+  @State errorMsg: string = '';
 
-  /** 模拟登录（T1.3：本地置为已登录；T4.2 改为调用 /auth/login） */
-  doLogin(): void {
+  async doLogin(): Promise<void> {
+    if (this.username.trim() === '' || this.password === '') {
+      this.errorMsg = '请输入用户名和密码';
+      return;
+    }
     this.loading = true;
-    setTimeout(() => {
+    this.errorMsg = '';
+
+    const body = new LoginRequestBody();
+    body.username = this.username.trim();
+    body.password = this.password;
+
+    const response = await HttpClient.post<LoginResponseData>('/auth/login', body);
+    if (response.code === 0 && response.data !== null) {
+      const data = response.data;
+      // 保存 Token 与用户信息
+      await TokenService.saveTokens(data.accessToken, data.refreshToken);
+      await TokenService.saveUserInfo(data.userId, data.username, data.nickname, data.userType);
+      // 全局 store
+      AppStore.setLogin(data.userId, data.username, data.nickname, data.userType);
       NavigationService.setLoggedIn(true);
-      this.loading = false;
-      // 返回上一页（Splash/受保护页面），由 onPop 回调继续跳转
+      // 返回上一页（由 pushAuth 的 onPop 回调继续跳转目标页）
       NavigationService.back();
-    }, 300);
+    } else {
+      this.errorMsg = response.message;
+    }
+    this.loading = false;
   }
 
   build() {
@@ -28,7 +51,7 @@ struct LoginPage {
       Text('知考')
         .fontSize(32)
         .fontWeight(FontWeight.Bold)
-        .fontColor('#1A73E8')
+        .fontColor(ThemeColors.PRIMARY)
         .margin({ top: 80, bottom: 40 })
 
       TextInput({ placeholder: '用户名', text: this.username })
@@ -42,15 +65,23 @@ struct LoginPage {
       TextInput({ placeholder: '密码', text: this.password })
         .width('80%')
         .height(48)
-        .margin({ bottom: 32 })
+        .margin({ bottom: 8 })
         .type(InputType.Password)
         .onChange((value: string) => {
           this.password = value;
         })
 
+      if (this.errorMsg !== '') {
+        Text(this.errorMsg)
+          .fontSize(13)
+          .fontColor(ThemeColors.DANGER)
+          .margin({ top: 4, bottom: 4 })
+      }
+
       Button(this.loading ? '登录中...' : '登录')
         .width('80%')
         .height(48)
+        .margin({ top: 16 })
         .enabled(!this.loading)
         .onClick(() => {
           this.doLogin();
@@ -59,10 +90,10 @@ struct LoginPage {
       Row() {
         Text('没有账号？')
           .fontSize(14)
-          .fontColor('#666666')
+          .fontColor(ThemeColors.TEXT_SECONDARY)
         Text('去注册')
           .fontSize(14)
-          .fontColor('#1A73E8')
+          .fontColor(ThemeColors.PRIMARY)
           .onClick(() => {
             NavigationService.push(RouteConstants.REGISTER);
           })
@@ -74,4 +105,21 @@ struct LoginPage {
     .alignItems(HorizontalAlign.Center)
     .backgroundColor(Color.White)
   }
+}
+
+/** 登录请求（契约 6.2） */
+export class LoginRequestBody {
+  username: string = '';
+  password: string = '';
+}
+
+/** 登录响应 data（契约 6.2） */
+export class LoginResponseData {
+  accessToken: string = '';
+  refreshToken: string = '';
+  expiresIn: number = 0;
+  userId: number = 0;
+  username: string = '';
+  nickname: string = '';
+  userType: number = 0;
 }
