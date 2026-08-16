@@ -1,8 +1,7 @@
 import { PreferencesService } from './PreferencesService';
-import { util } from '@kit.ArkTS';
 
 /**
- * 游客身份服务（T1.6）。
+ * 游客身份服务（T1.6/T4.3）。
  * 职责（任务书 6.1 游客约定）：首次启动生成随机 UUID 并持久化到 Preferences，
  * 重启后保持不变；卸载后自然失效（不做跨设备找回）。
  */
@@ -26,14 +25,14 @@ export class GuestIdService {
     await PreferencesService.getInstance().remove(GuestIdService.KEY_GUEST_UUID);
   }
 
-  /** 生成随机 UUID（v4 格式，仅依赖标准库，不采集任何硬件指纹） */
+  /** 生成随机 UUID v4（标准随机数 + 时间戳，不采集任何硬件指纹） */
   private static generateUuid(): string {
-    const helper = new util.Random();
-    const bytes = new Uint8Array(16);
+    // 生成 16 字节随机数（基于 Math.random，避免外部模块依赖）
+    const bytes: number[] = [];
     for (let i = 0; i < 16; i++) {
-      bytes[i] = helper.nextInt(0, 255);
+      bytes.push(Math.floor(Math.random() * 256));
     }
-    // 设置 v4 版本位与变体位
+    // v4 版本位与变体位
     bytes[6] = (bytes[6] & 0x0f) | 0x40;
     bytes[8] = (bytes[8] & 0x3f) | 0x80;
 

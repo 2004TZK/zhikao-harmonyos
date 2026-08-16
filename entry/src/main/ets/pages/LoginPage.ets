@@ -4,6 +4,7 @@ import { HttpClient } from '../service/HttpClient';
 import { TokenService } from '../service/TokenService';
 import { AppStore } from '../store/AppStore';
 import { ThemeColors } from '../constants/ThemeColors';
+import { GuestClientService } from '../service/GuestClientService';
 
 /**
  * 登录页（T4.2：对接 /auth/login）。
@@ -42,6 +43,17 @@ struct LoginPage {
       NavigationService.back();
     } else {
       this.errorMsg = response.message;
+    }
+    this.loading = false;
+  }
+
+  /** 游客体验：UUID 换 Token 进主容器（每日限额，超限 9001 引导登录） */
+  async enterAsGuest(): Promise<void> {
+    this.loading = true;
+    this.errorMsg = '';
+    const code = await GuestClientService.loginAsGuest();
+    if (code === 9001) {
+      this.errorMsg = '今日体验额度已用完，请登录后继续';
     }
     this.loading = false;
   }
@@ -99,6 +111,14 @@ struct LoginPage {
           })
       }
       .margin({ top: 24 })
+
+      Text('游客体验（每日限 5 个详情 + 5 道题）')
+        .fontSize(14)
+        .fontColor(ThemeColors.TEXT_TERTIARY)
+        .margin({ top: 32 })
+        .onClick(() => {
+          this.enterAsGuest();
+        })
     }
     .width('100%')
     .height('100%')
