@@ -23,7 +23,6 @@ export struct MinePage {
   }
 
   build() {
-  NavDestination() {
       Column() {
         // 用户信息区
         Column() {
@@ -75,7 +74,6 @@ export struct MinePage {
       .width('100%')
       .height('100%')
       .backgroundColor(ThemeColors.BACKGROUND)
-  }
 }
 
   @Builder

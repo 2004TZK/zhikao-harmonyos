@@ -1,10 +1,12 @@
 import { HomePage } from './HomePage';
 import { StudyPage } from './StudyPage';
-import { NavigationService } from '../service/NavigationService';
-import { RouteConstants } from '../constants/RouteConstants';
+import { PracticePage } from './PracticePage';
+import { ReviewPage } from './ReviewPage';
+import { MinePage } from './MinePage';
 
 /**
  * 主容器（T1.4）：底部导航 TabBar（首页/学习/练习/复习/我的）。
+ * 各 Tab 直接内嵌功能页（T1.4 优化：点 Tab 即进功能页，无需二次点击）。
  * 登录态守卫：进入本页即视为已登录（由登录流程/启动页保证）。
  */
 @Component
@@ -39,71 +41,17 @@ export struct MainPage {
         .tabBar(this.TabBuilder('学习', 1))
   
         TabContent() {
-          Column() {
-            Text('练习')
-              .fontSize(20)
-              .fontWeight(FontWeight.Bold)
-              .margin({ top: 40 })
-            Text('每日挑战 / 专项训练 / 随机训练')
-              .fontSize(13)
-              .fontColor('#999999')
-              .margin({ top: 12 })
-            Button('进入练习')
-              .width(140)
-              .margin({ top: 32 })
-              .onClick(() => {
-                NavigationService.push(RouteConstants.PRACTICE);
-              })
-          }
-          .width('100%')
-          .height('100%')
-          .backgroundColor(Color.White)
+          PracticePage()
         }
         .tabBar(this.TabBuilder('练习', 2))
   
         TabContent() {
-          Column() {
-            Text('复习')
-              .fontSize(20)
-              .fontWeight(FontWeight.Bold)
-              .margin({ top: 40 })
-            Text('今日复习 / 错题强化')
-              .fontSize(13)
-              .fontColor('#999999')
-              .margin({ top: 12 })
-            Button('进入复习')
-              .width(140)
-              .margin({ top: 32 })
-              .onClick(() => {
-                NavigationService.push(RouteConstants.REVIEW);
-              })
-          }
-          .width('100%')
-          .height('100%')
-          .backgroundColor(Color.White)
+          ReviewPage()
         }
         .tabBar(this.TabBuilder('复习', 3))
   
         TabContent() {
-          Column() {
-            Text('我的')
-              .fontSize(20)
-              .fontWeight(FontWeight.Bold)
-              .margin({ top: 40 })
-            Text('个人信息 / 统计 / 设置')
-              .fontSize(13)
-              .fontColor('#999999')
-              .margin({ top: 12 })
-            Button('进入我的')
-              .width(140)
-              .margin({ top: 32 })
-              .onClick(() => {
-                NavigationService.push(RouteConstants.MINE);
-              })
-          }
-          .width('100%')
-          .height('100%')
-          .backgroundColor(Color.White)
+          MinePage()
         }
         .tabBar(this.TabBuilder('我的', 4))
       }

@@ -36,7 +36,6 @@ export struct ReviewPage {
   }
 
   build() {
-  NavDestination() {
       Column() {
         Text('复习')
           .fontSize(20)
@@ -125,7 +124,6 @@ export struct ReviewPage {
       .width('100%')
       .height('100%')
       .backgroundColor(ThemeColors.BACKGROUND)
-  }
 }
 
   @Builder

@@ -17,7 +17,6 @@ export struct PracticePage {
   }
 
   build() {
-  NavDestination() {
       Column() {
         Text('练习')
           .fontSize(20)
@@ -141,7 +140,6 @@ export struct PracticePage {
       .height('100%')
       .backgroundColor(ThemeColors.BACKGROUND)
   }
-}
 }
 
 /** 系统路由表入口 */
