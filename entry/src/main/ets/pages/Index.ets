@@ -1,9 +1,10 @@
 import { RouterManager } from '../service/RouterManager';
 import { RouteConstants } from '../constants/RouteConstants';
+import { AppStore } from '../store/AppStore';
 
 /**
  * 应用入口：Navigation 容器（T1.3 路由基建）。
- * 注入全局 NavPathStack 到 RouterManager，启动即跳转 SplashPage。
+ * 注入全局 NavPathStack 到 RouterManager，初始化全局 store，启动即跳转 SplashPage。
  */
 @Entry
 @Component
@@ -12,6 +13,7 @@ struct Index {
 
   aboutToAppear(): void {
     RouterManager.getInstance().setStack(this.pathStack);
+    AppStore.initDefaults();
   }
 
   build() {
