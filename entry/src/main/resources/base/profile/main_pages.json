@@ -16,6 +16,9 @@
     "pages/AnswerPage",
     "pages/AnswerResultPage",
     "pages/WrongQuestionPage",
-    "pages/ReviewSessionPage"
+    "pages/ReviewSessionPage",
+    "pages/StatsPage",
+    "pages/StudyRecordPage",
+    "pages/MinePage"
   ]
 }

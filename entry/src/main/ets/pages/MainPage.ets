@@ -2,7 +2,6 @@ import { HomePage } from './HomePage';
 import { StudyPage } from './StudyPage';
 import { NavigationService } from '../service/NavigationService';
 import { RouteConstants } from '../constants/RouteConstants';
-import { MinePage } from './MinePage';
 
 /**
  * 主容器（T1.4）：底部导航 TabBar（首页/学习/练习/复习/我的）。
@@ -86,7 +85,25 @@ struct MainPage {
       .tabBar(this.TabBuilder('复习', 3))
 
       TabContent() {
-        MinePage()
+        Column() {
+          Text('我的')
+            .fontSize(20)
+            .fontWeight(FontWeight.Bold)
+            .margin({ top: 40 })
+          Text('个人信息 / 统计 / 设置')
+            .fontSize(13)
+            .fontColor('#999999')
+            .margin({ top: 12 })
+          Button('进入我的')
+            .width(140)
+            .margin({ top: 32 })
+            .onClick(() => {
+              NavigationService.push(RouteConstants.MINE);
+            })
+        }
+        .width('100%')
+        .height('100%')
+        .backgroundColor(Color.White)
       }
       .tabBar(this.TabBuilder('我的', 4))
     }
