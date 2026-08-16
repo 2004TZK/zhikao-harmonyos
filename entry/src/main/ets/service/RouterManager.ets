@@ -50,4 +50,9 @@ export class RouterManager {
   getStackSize(): number {
     return this.stack?.size() ?? 0;
   }
+
+  /** 按页面名获取其路由参数（NavPathStack.getParamByName） */
+  getParamByName(name: string): Object | undefined {
+    return this.stack?.getParamByName(name) as Object | undefined;
+  }
 }

@@ -5,6 +5,13 @@
     "pages/LoginPage",
     "pages/RegisterPage",
     "pages/AgreementPage",
-    "pages/MainPage"
+    "pages/MainPage",
+    "pages/KnowledgeCategoryPage",
+    "pages/KnowledgeListPage",
+    "pages/KnowledgeDetailPage",
+    "pages/IdiomCategoryPage",
+    "pages/IdiomListPage",
+    "pages/IdiomDetailPage",
+    "pages/FavoritePage"
   ]
 }
