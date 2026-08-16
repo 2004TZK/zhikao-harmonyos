@@ -15,6 +15,7 @@
     "pages/FavoritePage",
     "pages/AnswerPage",
     "pages/AnswerResultPage",
-    "pages/WrongQuestionPage"
+    "pages/WrongQuestionPage",
+    "pages/ReviewSessionPage"
   ]
 }
