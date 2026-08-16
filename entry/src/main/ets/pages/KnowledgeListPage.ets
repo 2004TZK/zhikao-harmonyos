@@ -173,6 +173,8 @@ struct KnowledgeListPage {
         .layoutWeight(1)
         .width('100%')
         .scrollBar(BarState.Off)
+        .cachedCount(5)
+        .edgeEffect(EdgeEffect.Spring)
       }
     }
     .width('100%')

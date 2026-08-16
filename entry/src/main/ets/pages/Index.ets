@@ -23,10 +23,8 @@ struct Index {
     .mode(NavigationMode.Stack)
     .hideTitleBar(true)
     .onAppear(() => {
-      // 延迟到页面容器就绪后跳转启动页
-      setTimeout(() => {
-        RouterManager.getInstance().clearTo(RouteConstants.SPLASH);
-      }, 0);
+      // 冷启动优化（T9.7）：容器就绪后立即跳转启动页（消除冗余延迟）
+      RouterManager.getInstance().clearTo(RouteConstants.SPLASH);
     })
   }
 }

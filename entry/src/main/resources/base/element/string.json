@@ -15,6 +15,14 @@
     {
       "name": "notification_reason",
       "value": "用于向您发送学习提醒通知"
+    },
+    {
+      "name": "widget_display_name",
+      "value": "知考今日任务"
+    },
+    {
+      "name": "widget_desc",
+      "value": "展示今日学习任务与待复习数"
     }
   ]
 }
