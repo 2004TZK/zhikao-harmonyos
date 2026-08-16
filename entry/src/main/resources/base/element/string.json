@@ -2,15 +2,15 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "module description"
+      "value": "知考公考常识与成语学习"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "description"
+      "value": "知考学习入口"
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "知考"
     },
     {
       "name": "notification_reason",
