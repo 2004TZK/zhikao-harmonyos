@@ -19,6 +19,7 @@
     "pages/ReviewSessionPage",
     "pages/StatsPage",
     "pages/StudyRecordPage",
-    "pages/MinePage"
+    "pages/MinePage",
+    "pages/SettingsPage"
   ]
 }

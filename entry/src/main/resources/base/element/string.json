@@ -11,6 +11,10 @@
     {
       "name": "EntryAbility_label",
       "value": "label"
+    },
+    {
+      "name": "notification_reason",
+      "value": "用于向您发送学习提醒通知"
     }
   ]
 }

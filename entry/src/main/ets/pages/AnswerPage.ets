@@ -195,6 +195,7 @@ struct AnswerPage {
                 .margin({ left: 16, right: 16, top: 16 })
                 .borderRadius(10)
                 .backgroundColor(this.result.correct ? '#E6F4EA' : '#FDECEA')
+                .transition(TransitionEffect.OPACITY.animation({ duration: 200, curve: Curve.EaseOut }))
               }
             }
             .width('100%')

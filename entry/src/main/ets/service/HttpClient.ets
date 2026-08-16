@@ -96,6 +96,12 @@ export class HttpClient {
 
       const text = rawResponse.result as string;
       return HttpClient.parseResponse<T>(text);
+    } catch (e) {
+      // 网络异常（断网/超时/连接失败）：返回 5000 兜底，避免页面崩溃（T9.4）
+      const apiResponse = new ApiResponse<T>();
+      apiResponse.code = 5000;
+      apiResponse.message = '网络异常，请检查网络连接';
+      return apiResponse;
     } finally {
       httpRequest.destroy();
     }
