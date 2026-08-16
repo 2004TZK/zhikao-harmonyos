@@ -1,47 +1,66 @@
+import { HomePage } from './HomePage';
+import { StudyPage } from './StudyPage';
+import { PracticePage } from './PracticePage';
+import { ReviewPage } from './ReviewPage';
+import { MinePage } from './MinePage';
 import { RouteConstants } from '../constants/RouteConstants';
 import { NavigationService } from '../service/NavigationService';
 
 /**
- * 主容器（T1.3 占位版，完整 TabBar 结构 T1.4 实现）。
- * 演示受保护页面：未登录访问会先跳登录页。
+ * 主容器（T1.4）：底部导航 TabBar（首页/学习/练习/复习/我的）。
+ * 登录态守卫：进入本页即视为已登录（由登录流程/启动页保证）。
  */
 @Entry
 @Component
 struct MainPage {
-  @State currentTab: number = 0;
+  @State currentIndex: number = 0;
+  private tabsController: TabsController = new TabsController();
 
-  build() {
+  @Builder
+  TabBuilder(title: string, index: number) {
     Column() {
-      Text('主容器（TabBar 占位，T1.4 完成）')
-        .fontSize(16)
-        .fontColor('#333333')
-        .margin({ top: 60 })
-
-      Text('首页 | 学习 | 练习 | 复习 | 我的')
-        .fontSize(13)
-        .fontColor('#999999')
-        .margin({ top: 16 })
-
-      Button('访问受保护页面：常识分类（演示登录守卫）')
-        .width('80%')
-        .margin({ top: 40 })
-        .onClick(() => {
-          // 未登录时 pushAuth 会先跳登录页，登录后自动继续跳转
-          NavigationService.pushAuth(RouteConstants.KNOWLEDGE_CATEGORY);
-        })
-
-      Button('退出登录')
-        .width('80%')
-        .margin({ top: 16 })
-        .backgroundColor('#E53935')
-        .onClick(() => {
-          NavigationService.setLoggedIn(false);
-          NavigationService.resetToLogin();
-        })
+      Text(title)
+        .fontSize(this.currentIndex === index ? 18 : 16)
+        .fontWeight(this.currentIndex === index ? FontWeight.Bold : FontWeight.Normal)
+        .fontColor(this.currentIndex === index ? '#1A73E8' : '#999999')
     }
     .width('100%')
     .height('100%')
-    .alignItems(HorizontalAlign.Center)
+    .justifyContent(FlexAlign.Center)
+  }
+
+  build() {
+    Tabs({ barPosition: BarPosition.End, controller: this.tabsController }) {
+      TabContent() {
+        HomePage()
+      }
+      .tabBar(this.TabBuilder('首页', 0))
+
+      TabContent() {
+        StudyPage()
+      }
+      .tabBar(this.TabBuilder('学习', 1))
+
+      TabContent() {
+        PracticePage()
+      }
+      .tabBar(this.TabBuilder('练习', 2))
+
+      TabContent() {
+        ReviewPage()
+      }
+      .tabBar(this.TabBuilder('复习', 3))
+
+      TabContent() {
+        MinePage()
+      }
+      .tabBar(this.TabBuilder('我的', 4))
+    }
+    .scrollable(false)
+    .barHeight(56)
+    .onChange((index: number) => {
+      this.currentIndex = index;
+    })
     .backgroundColor(Color.White)
   }
 }
