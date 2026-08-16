@@ -7,9 +7,8 @@ import { RouteConstants } from '../constants/RouteConstants';
  * 主容器（T1.4）：底部导航 TabBar（首页/学习/练习/复习/我的）。
  * 登录态守卫：进入本页即视为已登录（由登录流程/启动页保证）。
  */
-@Entry
 @Component
-struct MainPage {
+export struct MainPage {
   @State currentIndex: number = 0;
   private tabsController: TabsController = new TabsController();
 
@@ -27,91 +26,99 @@ struct MainPage {
   }
 
   build() {
-    Tabs({ barPosition: BarPosition.End, controller: this.tabsController }) {
-      TabContent() {
-        HomePage()
-      }
-      .tabBar(this.TabBuilder('首页', 0))
-
-      TabContent() {
-        StudyPage()
-      }
-      .tabBar(this.TabBuilder('学习', 1))
-
-      TabContent() {
-        Column() {
-          Text('练习')
-            .fontSize(20)
-            .fontWeight(FontWeight.Bold)
-            .margin({ top: 40 })
-          Text('每日挑战 / 专项训练 / 随机训练')
-            .fontSize(13)
-            .fontColor('#999999')
-            .margin({ top: 12 })
-          Button('进入练习')
-            .width(140)
-            .margin({ top: 32 })
-            .onClick(() => {
-              NavigationService.push(RouteConstants.PRACTICE);
-            })
+  NavDestination() {
+      Tabs({ barPosition: BarPosition.End, controller: this.tabsController }) {
+        TabContent() {
+          HomePage()
         }
-        .width('100%')
-        .height('100%')
-        .backgroundColor(Color.White)
-      }
-      .tabBar(this.TabBuilder('练习', 2))
-
-      TabContent() {
-        Column() {
-          Text('复习')
-            .fontSize(20)
-            .fontWeight(FontWeight.Bold)
-            .margin({ top: 40 })
-          Text('今日复习 / 错题强化')
-            .fontSize(13)
-            .fontColor('#999999')
-            .margin({ top: 12 })
-          Button('进入复习')
-            .width(140)
-            .margin({ top: 32 })
-            .onClick(() => {
-              NavigationService.push(RouteConstants.REVIEW);
-            })
+        .tabBar(this.TabBuilder('首页', 0))
+  
+        TabContent() {
+          StudyPage()
         }
-        .width('100%')
-        .height('100%')
-        .backgroundColor(Color.White)
-      }
-      .tabBar(this.TabBuilder('复习', 3))
-
-      TabContent() {
-        Column() {
-          Text('我的')
-            .fontSize(20)
-            .fontWeight(FontWeight.Bold)
-            .margin({ top: 40 })
-          Text('个人信息 / 统计 / 设置')
-            .fontSize(13)
-            .fontColor('#999999')
-            .margin({ top: 12 })
-          Button('进入我的')
-            .width(140)
-            .margin({ top: 32 })
-            .onClick(() => {
-              NavigationService.push(RouteConstants.MINE);
-            })
+        .tabBar(this.TabBuilder('学习', 1))
+  
+        TabContent() {
+          Column() {
+            Text('练习')
+              .fontSize(20)
+              .fontWeight(FontWeight.Bold)
+              .margin({ top: 40 })
+            Text('每日挑战 / 专项训练 / 随机训练')
+              .fontSize(13)
+              .fontColor('#999999')
+              .margin({ top: 12 })
+            Button('进入练习')
+              .width(140)
+              .margin({ top: 32 })
+              .onClick(() => {
+                NavigationService.push(RouteConstants.PRACTICE);
+              })
+          }
+          .width('100%')
+          .height('100%')
+          .backgroundColor(Color.White)
         }
-        .width('100%')
-        .height('100%')
-        .backgroundColor(Color.White)
+        .tabBar(this.TabBuilder('练习', 2))
+  
+        TabContent() {
+          Column() {
+            Text('复习')
+              .fontSize(20)
+              .fontWeight(FontWeight.Bold)
+              .margin({ top: 40 })
+            Text('今日复习 / 错题强化')
+              .fontSize(13)
+              .fontColor('#999999')
+              .margin({ top: 12 })
+            Button('进入复习')
+              .width(140)
+              .margin({ top: 32 })
+              .onClick(() => {
+                NavigationService.push(RouteConstants.REVIEW);
+              })
+          }
+          .width('100%')
+          .height('100%')
+          .backgroundColor(Color.White)
+        }
+        .tabBar(this.TabBuilder('复习', 3))
+  
+        TabContent() {
+          Column() {
+            Text('我的')
+              .fontSize(20)
+              .fontWeight(FontWeight.Bold)
+              .margin({ top: 40 })
+            Text('个人信息 / 统计 / 设置')
+              .fontSize(13)
+              .fontColor('#999999')
+              .margin({ top: 12 })
+            Button('进入我的')
+              .width(140)
+              .margin({ top: 32 })
+              .onClick(() => {
+                NavigationService.push(RouteConstants.MINE);
+              })
+          }
+          .width('100%')
+          .height('100%')
+          .backgroundColor(Color.White)
+        }
+        .tabBar(this.TabBuilder('我的', 4))
       }
-      .tabBar(this.TabBuilder('我的', 4))
-    }
-    .scrollable(false)
-    .barHeight(56)
-    .onChange((index: number) => {
-      this.currentIndex = index;
-    })
-    .backgroundColor(Color.White)
+      .scrollable(false)
+      .barHeight(56)
+      .onChange((index: number) => {
+        this.currentIndex = index;
+      })
+      .backgroundColor(Color.White)
   }
+}
+}
+
+/** 系统路由表入口 */
+@Builder
+export function MainPageBuilder() {
+  MainPage()
 }

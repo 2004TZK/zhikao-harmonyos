@@ -17,7 +17,7 @@ export class GuestClientService {
     const body = new GuestRequestBody();
     body.guestUuid = guestUuid;
 
-    const response = await HttpClient.post<GuestResponseData>('/auth/guest', body);
+    const response = await HttpClient.postPublic<GuestResponseData>('/auth/guest', body);
     if (response.code === 0 && response.data !== null) {
       const data = response.data;
       await TokenService.saveTokens(data.accessToken, data.refreshToken);

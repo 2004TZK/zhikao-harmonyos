@@ -10,9 +10,8 @@ import { EmptyView } from '../components/EmptyView';
 /**
  * 成语分类页（T5.5）。
  */
-@Entry
 @Component
-struct IdiomCategoryPage {
+export struct IdiomCategoryPage {
   @State categories: IdiomCategoryItem[] = [];
   @State loading: boolean = true;
   @State loadError: boolean = false;
@@ -60,34 +59,42 @@ struct IdiomCategoryPage {
   }
 
   build() {
-    Column() {
-      Text('成语')
-        .fontSize(20)
-        .fontWeight(FontWeight.Bold)
-        .width('100%')
-        .padding({ left: 16, top: 12 })
-
-      if (this.loading) {
-        LoadingView()
-      } else if (this.loadError) {
-        ErrorView({ onRetry: () => this.load() })
-      } else if (this.categories.length === 0) {
-        EmptyView({ emptyText: '暂无成语分类' })
-      } else {
-        List() {
-          ForEach(this.categories, (item: IdiomCategoryItem) => {
-            ListItem() {
-              this.CategoryCard(item)
-            }
-          }, (item: IdiomCategoryItem) => item.id.toString())
+  NavDestination() {
+      Column() {
+        Text('成语')
+          .fontSize(20)
+          .fontWeight(FontWeight.Bold)
+          .width('100%')
+          .padding({ left: 16, top: 12 })
+  
+        if (this.loading) {
+          LoadingView()
+        } else if (this.loadError) {
+          ErrorView({ onRetry: () => this.load() })
+        } else if (this.categories.length === 0) {
+          EmptyView({ emptyText: '暂无成语分类' })
+        } else {
+          List() {
+            ForEach(this.categories, (item: IdiomCategoryItem) => {
+              ListItem() {
+                this.CategoryCard(item)
+              }
+            }, (item: IdiomCategoryItem) => item.id.toString())
+          }
+          .layoutWeight(1)
+          .width('100%')
+          .scrollBar(BarState.Off)
         }
-        .layoutWeight(1)
-        .width('100%')
-        .scrollBar(BarState.Off)
       }
-    }
-    .width('100%')
-    .height('100%')
-    .backgroundColor(ThemeColors.BACKGROUND)
+      .width('100%')
+      .height('100%')
+      .backgroundColor(ThemeColors.BACKGROUND)
   }
+}
+}
+
+/** 系统路由表入口 */
+@Builder
+export function IdiomCategoryPageBuilder() {
+  IdiomCategoryPage()
 }

@@ -6,61 +6,62 @@ import { RouteConstants } from '../constants/RouteConstants';
  * 入口：设置页与首次启动弹窗。
  * 更新：T10.10 发布合规自查——补充完整隐私政策与用户协议正文（联系方式由运营配置）。
  */
-@Entry
 @Component
-struct AgreementPage {
+export struct AgreementPage {
   @State currentTab: number = 0;
   /** 客服/联系方式（发布前由运营填入正式邮箱或公众号） */
   private readonly contact: string = 'support@zhikao.example.com';
 
   build() {
-    Column() {
-      // 顶部 Tab 切换
-      Row() {
-        Text('隐私政策')
-          .fontSize(this.currentTab === 0 ? 16 : 14)
-          .fontWeight(this.currentTab === 0 ? FontWeight.Bold : FontWeight.Normal)
-          .fontColor(this.currentTab === 0 ? '#1A73E8' : '#999999')
-          .onClick(() => {
-            this.currentTab = 0;
-          })
-        Text('用户协议')
-          .fontSize(this.currentTab === 1 ? 16 : 14)
-          .fontWeight(this.currentTab === 1 ? FontWeight.Bold : FontWeight.Normal)
-          .fontColor(this.currentTab === 1 ? '#1A73E8' : '#999999')
-          .margin({ left: 40 })
-          .onClick(() => {
-            this.currentTab = 1;
-          })
+  NavDestination() {
+      Column() {
+        // 顶部 Tab 切换
+        Row() {
+          Text('隐私政策')
+            .fontSize(this.currentTab === 0 ? 16 : 14)
+            .fontWeight(this.currentTab === 0 ? FontWeight.Bold : FontWeight.Normal)
+            .fontColor(this.currentTab === 0 ? '#1A73E8' : '#999999')
+            .onClick(() => {
+              this.currentTab = 0;
+            })
+          Text('用户协议')
+            .fontSize(this.currentTab === 1 ? 16 : 14)
+            .fontWeight(this.currentTab === 1 ? FontWeight.Bold : FontWeight.Normal)
+            .fontColor(this.currentTab === 1 ? '#1A73E8' : '#999999')
+            .margin({ left: 40 })
+            .onClick(() => {
+              this.currentTab = 1;
+            })
+        }
+        .width('100%')
+        .padding({ top: 16, bottom: 12 })
+        .justifyContent(FlexAlign.Center)
+  
+        if (this.currentTab === 0) {
+          Scroll() {
+            Text(this.privacyText())
+              .fontSize(14)
+              .lineHeight(22)
+              .fontColor('#333333')
+              .padding(16)
+          }
+          .layoutWeight(1)
+        } else {
+          Scroll() {
+            Text(this.agreementText())
+              .fontSize(14)
+              .lineHeight(22)
+              .fontColor('#333333')
+              .padding(16)
+          }
+          .layoutWeight(1)
+        }
       }
       .width('100%')
-      .padding({ top: 16, bottom: 12 })
-      .justifyContent(FlexAlign.Center)
-
-      if (this.currentTab === 0) {
-        Scroll() {
-          Text(this.privacyText())
-            .fontSize(14)
-            .lineHeight(22)
-            .fontColor('#333333')
-            .padding(16)
-        }
-        .layoutWeight(1)
-      } else {
-        Scroll() {
-          Text(this.agreementText())
-            .fontSize(14)
-            .lineHeight(22)
-            .fontColor('#333333')
-            .padding(16)
-        }
-        .layoutWeight(1)
-      }
-    }
-    .width('100%')
-    .height('100%')
-    .backgroundColor(Color.White)
+      .height('100%')
+      .backgroundColor(Color.White)
   }
+}
 
   private privacyText(): string {
     return '知考隐私政策\n\n' +
@@ -113,4 +114,10 @@ struct AgreementPage {
       '八、联系我们\n' +
       '如您对本协议有任何疑问，请联系：' + this.contact + '。';
   }
+}
+
+/** 系统路由表入口 */
+@Builder
+export function AgreementPageBuilder() {
+  AgreementPage()
 }

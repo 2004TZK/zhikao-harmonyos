@@ -10,9 +10,8 @@ import { EmptyView } from '../components/EmptyView';
 /**
  * 收藏列表页（T5.6）：知识点/成语双 Tab。
  */
-@Entry
 @Component
-struct FavoritePage {
+export struct FavoritePage {
   @State currentTab: number = 0;
   @State knowledgeItems: FavoriteItem[] = [];
   @State idiomItems: FavoriteItem[] = [];
@@ -53,86 +52,88 @@ struct FavoritePage {
   }
 
   build() {
-    Column() {
-      // Tab
-      Row() {
-        Text('知识点')
-          .fontSize(this.currentTab === 0 ? 16 : 14)
-          .fontWeight(this.currentTab === 0 ? FontWeight.Bold : FontWeight.Normal)
-          .fontColor(this.currentTab === 0 ? ThemeColors.PRIMARY : ThemeColors.TEXT_TERTIARY)
-          .onClick(() => {
-            this.currentTab = 0;
-          })
-        Text('成语')
-          .fontSize(this.currentTab === 1 ? 16 : 14)
-          .fontWeight(this.currentTab === 1 ? FontWeight.Bold : FontWeight.Normal)
-          .fontColor(this.currentTab === 1 ? ThemeColors.PRIMARY : ThemeColors.TEXT_TERTIARY)
-          .margin({ left: 40 })
-          .onClick(() => {
-            this.currentTab = 1;
-          })
+  NavDestination() {
+      Column() {
+        // Tab
+        Row() {
+          Text('知识点')
+            .fontSize(this.currentTab === 0 ? 16 : 14)
+            .fontWeight(this.currentTab === 0 ? FontWeight.Bold : FontWeight.Normal)
+            .fontColor(this.currentTab === 0 ? ThemeColors.PRIMARY : ThemeColors.TEXT_TERTIARY)
+            .onClick(() => {
+              this.currentTab = 0;
+            })
+          Text('成语')
+            .fontSize(this.currentTab === 1 ? 16 : 14)
+            .fontWeight(this.currentTab === 1 ? FontWeight.Bold : FontWeight.Normal)
+            .fontColor(this.currentTab === 1 ? ThemeColors.PRIMARY : ThemeColors.TEXT_TERTIARY)
+            .margin({ left: 40 })
+            .onClick(() => {
+              this.currentTab = 1;
+            })
+        }
+        .width('100%')
+        .padding({ top: 14, bottom: 10 })
+        .justifyContent(FlexAlign.Center)
+  
+        if (this.loading) {
+          LoadingView()
+        } else if (this.loadError) {
+          ErrorView({ onRetry: () => this.load() })
+        } else if (this.currentTab === 0 && this.knowledgeItems.length === 0) {
+          EmptyView({ emptyText: '暂无收藏的知识点' })
+        } else if (this.currentTab === 1 && this.idiomItems.length === 0) {
+          EmptyView({ emptyText: '暂无收藏的成语' })
+        } else {
+          List() {
+            if (this.currentTab === 0) {
+              ForEach(this.knowledgeItems, (item: FavoriteItem) => {
+                ListItem() {
+                  Row() {
+                    Text(item.title)
+                      .fontSize(15)
+                      .layoutWeight(1)
+                    Text('去查看 >')
+                      .fontSize(12)
+                      .fontColor(ThemeColors.PRIMARY)
+                  }
+                  .width('100%')
+                  .padding(14)
+                  .onClick(() => {
+                    this.openDetail(item);
+                  })
+                }
+              }, (item: FavoriteItem) => item.targetId.toString())
+            } else {
+              ForEach(this.idiomItems, (item: FavoriteItem) => {
+                ListItem() {
+                  Row() {
+                    Text(item.title)
+                      .fontSize(15)
+                      .layoutWeight(1)
+                    Text('去查看 >')
+                      .fontSize(12)
+                      .fontColor(ThemeColors.PRIMARY)
+                  }
+                  .width('100%')
+                  .padding(14)
+                  .onClick(() => {
+                    this.openDetail(item);
+                  })
+                }
+              }, (item: FavoriteItem) => item.targetId.toString())
+            }
+          }
+          .layoutWeight(1)
+          .width('100%')
+          .scrollBar(BarState.Off)
+        }
       }
       .width('100%')
-      .padding({ top: 14, bottom: 10 })
-      .justifyContent(FlexAlign.Center)
-
-      if (this.loading) {
-        LoadingView()
-      } else if (this.loadError) {
-        ErrorView({ onRetry: () => this.load() })
-      } else if (this.currentTab === 0 && this.knowledgeItems.length === 0) {
-        EmptyView({ emptyText: '暂无收藏的知识点' })
-      } else if (this.currentTab === 1 && this.idiomItems.length === 0) {
-        EmptyView({ emptyText: '暂无收藏的成语' })
-      } else {
-        List() {
-          if (this.currentTab === 0) {
-            ForEach(this.knowledgeItems, (item: FavoriteItem) => {
-              ListItem() {
-                Row() {
-                  Text(item.title)
-                    .fontSize(15)
-                    .layoutWeight(1)
-                  Text('去查看 >')
-                    .fontSize(12)
-                    .fontColor(ThemeColors.PRIMARY)
-                }
-                .width('100%')
-                .padding(14)
-                .onClick(() => {
-                  this.openDetail(item);
-                })
-              }
-            }, (item: FavoriteItem) => item.targetId.toString())
-          } else {
-            ForEach(this.idiomItems, (item: FavoriteItem) => {
-              ListItem() {
-                Row() {
-                  Text(item.title)
-                    .fontSize(15)
-                    .layoutWeight(1)
-                  Text('去查看 >')
-                    .fontSize(12)
-                    .fontColor(ThemeColors.PRIMARY)
-                }
-                .width('100%')
-                .padding(14)
-                .onClick(() => {
-                  this.openDetail(item);
-                })
-              }
-            }, (item: FavoriteItem) => item.targetId.toString())
-          }
-        }
-        .layoutWeight(1)
-        .width('100%')
-        .scrollBar(BarState.Off)
-      }
-    }
-    .width('100%')
-    .height('100%')
-    .backgroundColor(ThemeColors.BACKGROUND)
+      .height('100%')
+      .backgroundColor(ThemeColors.BACKGROUND)
   }
+}
 }
 
 /** 收藏项 */
@@ -143,4 +144,10 @@ export class FavoriteItem {
   targetId: number = 0;
   title: string = '';
   createdAt: string = '';
+}
+
+/** 系统路由表入口 */
+@Builder
+export function FavoritePageBuilder() {
+  FavoritePage()
 }

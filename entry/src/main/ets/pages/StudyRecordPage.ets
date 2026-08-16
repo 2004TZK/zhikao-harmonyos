@@ -7,9 +7,8 @@ import { EmptyView } from '../components/EmptyView';
 /**
  * 学习记录页（T8.3）：时间线记录。
  */
-@Entry
 @Component
-struct StudyRecordPage {
+export struct StudyRecordPage {
   @State items: StudyRecordItem[] = [];
   @State loading: boolean = true;
   @State loadError: boolean = false;
@@ -51,51 +50,59 @@ struct StudyRecordPage {
   }
 
   build() {
-    Column() {
-      Text('学习记录')
-        .fontSize(20)
-        .fontWeight(FontWeight.Bold)
-        .width('100%')
-        .padding({ left: 16, top: 12 })
-
-      if (this.loading) {
-        LoadingView()
-      } else if (this.loadError) {
-        ErrorView({ onRetry: () => this.load() })
-      } else if (this.items.length === 0) {
-        EmptyView({ emptyText: '暂无学习记录' })
-      } else {
-        List() {
-          ForEach(this.items, (item: StudyRecordItem) => {
-            ListItem() {
-              Row() {
-                Text(this.recordTypeName(item.recordType))
-                  .fontSize(14)
-                  .fontColor(ThemeColors.PRIMARY)
-                Text(` · ${Math.round(item.durationSeconds / 60)} 分钟`)
-                  .fontSize(13)
-                  .fontColor(ThemeColors.TEXT_SECONDARY)
-                  .margin({ left: 8 })
-                Blank()
-                Text(this.formatTime(item.createdAt))
-                  .fontSize(12)
-                  .fontColor(ThemeColors.TEXT_TERTIARY)
+  NavDestination() {
+      Column() {
+        Text('学习记录')
+          .fontSize(20)
+          .fontWeight(FontWeight.Bold)
+          .width('100%')
+          .padding({ left: 16, top: 12 })
+  
+        if (this.loading) {
+          LoadingView()
+        } else if (this.loadError) {
+          ErrorView({ onRetry: () => this.load() })
+        } else if (this.items.length === 0) {
+          EmptyView({ emptyText: '暂无学习记录' })
+        } else {
+          List() {
+            ForEach(this.items, (item: StudyRecordItem) => {
+              ListItem() {
+                Row() {
+                  Text(this.recordTypeName(item.recordType))
+                    .fontSize(14)
+                    .fontColor(ThemeColors.PRIMARY)
+                  Text(` · ${Math.round(item.durationSeconds / 60)} 分钟`)
+                    .fontSize(13)
+                    .fontColor(ThemeColors.TEXT_SECONDARY)
+                    .margin({ left: 8 })
+                  Blank()
+                  Text(this.formatTime(item.createdAt))
+                    .fontSize(12)
+                    .fontColor(ThemeColors.TEXT_TERTIARY)
+                }
+                .width('100%')
+                .padding(14)
+                .margin({ left: 16, right: 16, top: 8 })
+                .borderRadius(10)
+                .backgroundColor(ThemeColors.CARD_BACKGROUND)
               }
-              .width('100%')
-              .padding(14)
-              .margin({ left: 16, right: 16, top: 8 })
-              .borderRadius(10)
-              .backgroundColor(ThemeColors.CARD_BACKGROUND)
-            }
-          }, (item: StudyRecordItem) => item.id.toString())
+            }, (item: StudyRecordItem) => item.id.toString())
+          }
+          .layoutWeight(1)
+          .width('100%')
+          .scrollBar(BarState.Off)
         }
-        .layoutWeight(1)
-        .width('100%')
-        .scrollBar(BarState.Off)
       }
-    }
-    .width('100%')
-    .height('100%')
-    .backgroundColor(ThemeColors.BACKGROUND)
+      .width('100%')
+      .height('100%')
+      .backgroundColor(ThemeColors.BACKGROUND)
   }
+}
+}
+
+/** 系统路由表入口 */
+@Builder
+export function StudyRecordPageBuilder() {
+  StudyRecordPage()
 }

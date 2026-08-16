@@ -4,6 +4,7 @@ import { TokenService } from '../service/TokenService';
 import { AppStore } from '../store/AppStore';
 import { HttpClient } from '../service/HttpClient';
 import { AgreementService } from '../service/AgreementService';
+import { PreferencesService } from '../service/PreferencesService';
 import { ThemeColors } from '../constants/ThemeColors';
 import { promptAction } from '@kit.ArkUI';
 
@@ -15,9 +16,8 @@ import { promptAction } from '@kit.ArkUI';
  *  3. 有 Token → /auth/profile 校验（2001 自动刷新、2002 清态跳登录）
  *  4. 校验通过 → 主容器；无 Token → 登录页
  */
-@Entry
 @Component
-struct SplashPage {
+export struct SplashPage {
   @State title: string = '知考';
   @State showAgreementDialog: boolean = false;
 
@@ -28,6 +28,12 @@ struct SplashPage {
   /** 启动流程：先协议弹窗（首次），再 Token 校验 */
   async initFlow(): Promise<void> {
     await this.delay(400);
+    // 等待本地存储初始化完成（T1.6 修复：避免与 EntryAbility 异步 init 竞态）
+    try {
+      await PreferencesService.getInstance().whenReady();
+    } catch (e) {
+      // 存储未初始化时按未同意协议处理，走弹窗流程
+    }
     const agreed = await AgreementService.hasAgreed();
     if (!agreed) {
       // 首次启动：展示协议弹窗，未同意不继续（不初始化网络）
@@ -143,37 +149,47 @@ struct SplashPage {
   }
 
   build() {
-    Stack() {
-      Column() {
-        Text(this.title)
-          .fontSize(36)
-          .fontWeight(FontWeight.Bold)
-          .fontColor('#1A73E8')
-        Text('公务员常识与成语学习')
-          .fontSize(14)
-          .fontColor('#999999')
-          .margin({ top: 8 })
-        LoadingProgress()
-          .width(40)
-          .height(40)
-          .margin({ top: 32 })
-      }
-      .width('100%')
-      .height('100%')
-      .justifyContent(FlexAlign.Center)
-      .backgroundColor(Color.White)
-
-      if (this.showAgreementDialog) {
+    NavDestination() {
+      Stack() {
         Column() {
-          this.AgreementDialog()
+          Text(this.title)
+            .fontSize(36)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#1A73E8')
+          Text('公务员常识与成语学习')
+            .fontSize(14)
+            .fontColor('#999999')
+            .margin({ top: 8 })
+          LoadingProgress()
+            .width(40)
+            .height(40)
+            .margin({ top: 32 })
         }
         .width('100%')
         .height('100%')
         .justifyContent(FlexAlign.Center)
-        .backgroundColor('#66000000')
+        .backgroundColor(Color.White)
+
+        if (this.showAgreementDialog) {
+          Column() {
+            this.AgreementDialog()
+          }
+          .width('100%')
+          .height('100%')
+          .justifyContent(FlexAlign.Center)
+          .backgroundColor('#66000000')
+        }
       }
+      .width('100%')
+      .height('100%')
     }
-    .width('100%')
-    .height('100%')
+    .title('知考')
+    .hideTitleBar(true)
   }
+}
+
+/** 系统路由表入口（T1.3 路由基建修复：Navigation 字符串路由需 buildFunction 导出） */
+@Builder
+export function SplashPageBuilder() {
+  SplashPage()
 }

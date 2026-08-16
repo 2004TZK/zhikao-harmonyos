@@ -1,0 +1,180 @@
+{
+  "routerMap": [
+    {
+      "name": "SplashPage",
+      "pageSourceFile": "src/main/ets/pages/SplashPage.ets",
+      "buildFunction": "SplashPageBuilder",
+      "data": {
+        "description": "启动页"
+      }
+    },
+    {
+      "name": "LoginPage",
+      "pageSourceFile": "src/main/ets/pages/LoginPage.ets",
+      "buildFunction": "LoginPageBuilder",
+      "data": {
+        "description": "登录页"
+      }
+    },
+    {
+      "name": "RegisterPage",
+      "pageSourceFile": "src/main/ets/pages/RegisterPage.ets",
+      "buildFunction": "RegisterPageBuilder",
+      "data": {
+        "description": "注册页"
+      }
+    },
+    {
+      "name": "AgreementPage",
+      "pageSourceFile": "src/main/ets/pages/AgreementPage.ets",
+      "buildFunction": "AgreementPageBuilder",
+      "data": {
+        "description": "协议页"
+      }
+    },
+    {
+      "name": "MainPage",
+      "pageSourceFile": "src/main/ets/pages/MainPage.ets",
+      "buildFunction": "MainPageBuilder",
+      "data": {
+        "description": "主容器"
+      }
+    },
+    {
+      "name": "KnowledgeCategoryPage",
+      "pageSourceFile": "src/main/ets/pages/KnowledgeCategoryPage.ets",
+      "buildFunction": "KnowledgeCategoryPageBuilder",
+      "data": {
+        "description": "常识分类页"
+      }
+    },
+    {
+      "name": "KnowledgeListPage",
+      "pageSourceFile": "src/main/ets/pages/KnowledgeListPage.ets",
+      "buildFunction": "KnowledgeListPageBuilder",
+      "data": {
+        "description": "常识列表页"
+      }
+    },
+    {
+      "name": "KnowledgeDetailPage",
+      "pageSourceFile": "src/main/ets/pages/KnowledgeDetailPage.ets",
+      "buildFunction": "KnowledgeDetailPageBuilder",
+      "data": {
+        "description": "常识详情页"
+      }
+    },
+    {
+      "name": "IdiomCategoryPage",
+      "pageSourceFile": "src/main/ets/pages/IdiomCategoryPage.ets",
+      "buildFunction": "IdiomCategoryPageBuilder",
+      "data": {
+        "description": "成语分类页"
+      }
+    },
+    {
+      "name": "IdiomListPage",
+      "pageSourceFile": "src/main/ets/pages/IdiomListPage.ets",
+      "buildFunction": "IdiomListPageBuilder",
+      "data": {
+        "description": "成语列表页"
+      }
+    },
+    {
+      "name": "IdiomDetailPage",
+      "pageSourceFile": "src/main/ets/pages/IdiomDetailPage.ets",
+      "buildFunction": "IdiomDetailPageBuilder",
+      "data": {
+        "description": "成语详情页"
+      }
+    },
+    {
+      "name": "FavoritePage",
+      "pageSourceFile": "src/main/ets/pages/FavoritePage.ets",
+      "buildFunction": "FavoritePageBuilder",
+      "data": {
+        "description": "收藏页"
+      }
+    },
+    {
+      "name": "PracticePage",
+      "pageSourceFile": "src/main/ets/pages/PracticePage.ets",
+      "buildFunction": "PracticePageBuilder",
+      "data": {
+        "description": "练习页"
+      }
+    },
+    {
+      "name": "AnswerPage",
+      "pageSourceFile": "src/main/ets/pages/AnswerPage.ets",
+      "buildFunction": "AnswerPageBuilder",
+      "data": {
+        "description": "答题页"
+      }
+    },
+    {
+      "name": "AnswerResultPage",
+      "pageSourceFile": "src/main/ets/pages/AnswerResultPage.ets",
+      "buildFunction": "AnswerResultPageBuilder",
+      "data": {
+        "description": "答题结果页"
+      }
+    },
+    {
+      "name": "WrongQuestionPage",
+      "pageSourceFile": "src/main/ets/pages/WrongQuestionPage.ets",
+      "buildFunction": "WrongQuestionPageBuilder",
+      "data": {
+        "description": "错题本"
+      }
+    },
+    {
+      "name": "ReviewPage",
+      "pageSourceFile": "src/main/ets/pages/ReviewPage.ets",
+      "buildFunction": "ReviewPageBuilder",
+      "data": {
+        "description": "复习页"
+      }
+    },
+    {
+      "name": "ReviewSessionPage",
+      "pageSourceFile": "src/main/ets/pages/ReviewSessionPage.ets",
+      "buildFunction": "ReviewSessionPageBuilder",
+      "data": {
+        "description": "复习会话页"
+      }
+    },
+    {
+      "name": "StatsPage",
+      "pageSourceFile": "src/main/ets/pages/StatsPage.ets",
+      "buildFunction": "StatsPageBuilder",
+      "data": {
+        "description": "统计页"
+      }
+    },
+    {
+      "name": "StudyRecordPage",
+      "pageSourceFile": "src/main/ets/pages/StudyRecordPage.ets",
+      "buildFunction": "StudyRecordPageBuilder",
+      "data": {
+        "description": "学习记录页"
+      }
+    },
+    {
+      "name": "MinePage",
+      "pageSourceFile": "src/main/ets/pages/MinePage.ets",
+      "buildFunction": "MinePageBuilder",
+      "data": {
+        "description": "我的页"
+      }
+    },
+    {
+      "name": "SettingsPage",
+      "pageSourceFile": "src/main/ets/pages/SettingsPage.ets",
+      "buildFunction": "SettingsPageBuilder",
+      "data": {
+        "description": "设置页"
+      }
+    }
+  ]
+}

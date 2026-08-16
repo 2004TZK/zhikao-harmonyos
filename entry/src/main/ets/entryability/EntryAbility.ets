@@ -1,6 +1,7 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { PreferencesService } from '../service/PreferencesService';
 
 const DOMAIN = 0x0000;
 
@@ -11,6 +12,14 @@ export default class EntryAbility extends UIAbility {
     } catch (err) {
       hilog.error(DOMAIN, 'testTag', 'Failed to set colorMode. Cause: %{public}s', JSON.stringify(err));
     }
+    // 初始化本地存储（T1.6 修复：必须持有 UIAbilityContext 才能操作 Preferences）
+    PreferencesService.getInstance().init(this.context)
+      .then(() => {
+        hilog.info(DOMAIN, 'testTag', '%{public}s', 'Preferences initialized');
+      })
+      .catch((err: Error) => {
+        hilog.error(DOMAIN, 'testTag', 'Failed to init Preferences. Cause: %{public}s', JSON.stringify(err));
+      });
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
   }
 

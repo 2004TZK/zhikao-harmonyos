@@ -12,9 +12,8 @@ import { EmptyView } from '../components/EmptyView';
  * 常识列表页（T5.3）。
  * 分页加载、搜索、掌握度徽标。
  */
-@Entry
 @Component
-struct KnowledgeListPage {
+export struct KnowledgeListPage {
   @State categoryId: number = 0;
   @State keyword: string = '';
   @State items: KnowledgeListItem[] = [];
@@ -26,12 +25,11 @@ struct KnowledgeListPage {
   @State hasMore: boolean = true;
 
   aboutToAppear(): void {
-    // 路由参数：categoryId（从 RouterManager 当前页面参数读取）
+    // 路由参数：categoryId（参数在 NavDestination onReady 中最终确认并加载）
     const param = RouterManager.getInstance().getParamByName(RouteConstants.KNOWLEDGE_LIST) as RouteParamObject;
     if (param !== undefined && param !== null) {
       this.categoryId = param.categoryId;
     }
-    this.load();
   }
 
   async load(reset: boolean = true): Promise<void> {
@@ -94,91 +92,112 @@ struct KnowledgeListPage {
   }
 
   build() {
-    Column() {
-      // 搜索栏
-      Row() {
-        TextInput({ placeholder: '搜索常识知识点', text: this.keyword })
-          .layoutWeight(1)
-          .height(40)
-          .onChange((value: string) => {
-            this.keyword = value;
-          })
-        Button('搜索')
-          .height(40)
-          .margin({ left: 8 })
-          .backgroundColor(ThemeColors.PRIMARY)
-          .onClick(() => {
-            this.load(true);
-          })
-      }
-      .width('100%')
-      .padding({ left: 16, right: 16, top: 12 })
-
-      if (this.loading) {
-        LoadingView()
-      } else if (this.loadError) {
-        ErrorView({ onRetry: () => this.load(true) })
-      } else if (this.items.length === 0) {
-        EmptyView({ emptyText: '暂无知识点' })
-      } else {
-        List() {
-          ForEach(this.items, (item: KnowledgeListItem) => {
-            ListItem() {
-              Row() {
-                Column() {
-                  Text(item.title)
-                    .fontSize(15)
-                    .fontWeight(FontWeight.Medium)
-                  Text(item.summary)
-                    .fontSize(12)
-                    .fontColor(ThemeColors.TEXT_TERTIARY)
-                    .margin({ top: 4 })
-                    .maxLines(2)
-                    .textOverflow({ overflow: TextOverflow.Ellipsis })
+  NavDestination() {
+      Column() {
+        // 搜索栏
+        Row() {
+          TextInput({ placeholder: '搜索常识知识点', text: this.keyword })
+            .layoutWeight(1)
+            .height(40)
+            .onChange((value: string) => {
+              this.keyword = value;
+            })
+          Button('搜索')
+            .height(40)
+            .margin({ left: 8 })
+            .backgroundColor(ThemeColors.PRIMARY)
+            .onClick(() => {
+              this.load(true);
+            })
+        }
+        .width('100%')
+        .padding({ left: 16, right: 16, top: 12 })
+  
+        if (this.loading) {
+          LoadingView()
+        } else if (this.loadError) {
+          ErrorView({ onRetry: () => this.load(true) })
+        } else if (this.items.length === 0) {
+          EmptyView({ emptyText: '暂无知识点' })
+        } else {
+          List() {
+            ForEach(this.items, (item: KnowledgeListItem) => {
+              ListItem() {
+                Row() {
+                  Column() {
+                    Text(item.title)
+                      .fontSize(15)
+                      .fontWeight(FontWeight.Medium)
+                    Text(item.summary)
+                      .fontSize(12)
+                      .fontColor(ThemeColors.TEXT_TERTIARY)
+                      .margin({ top: 4 })
+                      .maxLines(2)
+                      .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  }
+                  .alignItems(HorizontalAlign.Start)
+                  .layoutWeight(1)
+  
+                  Text(this.masteryText(item.mastery))
+                    .fontSize(11)
+                    .fontColor(Color.White)
+                    .backgroundColor(this.masteryColor(item.mastery))
+                    .borderRadius(4)
+                    .padding({ left: 6, right: 6, top: 2, bottom: 2 })
                 }
-                .alignItems(HorizontalAlign.Start)
-                .layoutWeight(1)
-
-                Text(this.masteryText(item.mastery))
-                  .fontSize(11)
-                  .fontColor(Color.White)
-                  .backgroundColor(this.masteryColor(item.mastery))
-                  .borderRadius(4)
-                  .padding({ left: 6, right: 6, top: 2, bottom: 2 })
+                .width('100%')
+                .padding(14)
+                .onClick(() => {
+                  const param = new RouteParamObject();
+                  param.knowledgeId = item.id;
+                  NavigationService.push(RouteConstants.KNOWLEDGE_DETAIL, param);
+                })
               }
-              .width('100%')
-              .padding(14)
-              .onClick(() => {
-                const param = new RouteParamObject();
-                param.knowledgeId = item.id;
-                NavigationService.push(RouteConstants.KNOWLEDGE_DETAIL, param);
+            }, (item: KnowledgeListItem) => item.id.toString())
+  
+            if (this.hasMore) {
+              ListItem() {
+                Text(this.loadingMore ? '加载中...' : '上拉加载更多')
+                  .fontSize(13)
+                  .fontColor(ThemeColors.TEXT_TERTIARY)
+                  .width('100%')
+                  .textAlign(TextAlign.Center)
+                  .padding(12)
+              }
+              .onAppear(() => {
+                this.loadMore();
               })
             }
-          }, (item: KnowledgeListItem) => item.id.toString())
-
-          if (this.hasMore) {
-            ListItem() {
-              Text(this.loadingMore ? '加载中...' : '上拉加载更多')
-                .fontSize(13)
-                .fontColor(ThemeColors.TEXT_TERTIARY)
-                .width('100%')
-                .textAlign(TextAlign.Center)
-                .padding(12)
-            }
-            .onAppear(() => {
-              this.loadMore();
-            })
           }
+          .layoutWeight(1)
+          .width('100%')
+          .scrollBar(BarState.Off)
+          .cachedCount(5)
+          .edgeEffect(EdgeEffect.Spring)
         }
-        .layoutWeight(1)
-        .width('100%')
-        .scrollBar(BarState.Off)
-        .cachedCount(5)
-        .edgeEffect(EdgeEffect.Spring)
       }
+      .width('100%')
+      .height('100%')
+      .backgroundColor(ThemeColors.BACKGROUND)
     }
-    .width('100%')
-    .height('100%')
-    .backgroundColor(ThemeColors.BACKGROUND)
+    .onReady((context: NavDestinationContext) => {
+      // 系统路由表模式下：优先用 onReady 的 context.pathInfo.param 取参数（官方推荐）
+      const pathParam = context.pathInfo.param as RouteParamObject;
+      if (pathParam !== undefined && pathParam !== null && pathParam.categoryId > 0) {
+        this.categoryId = pathParam.categoryId;
+      } else {
+        const param = RouterManager.getInstance().getParamByName(RouteConstants.KNOWLEDGE_LIST) as RouteParamObject;
+        if (param !== undefined && param !== null && param.categoryId > 0) {
+          this.categoryId = param.categoryId;
+        }
+      }
+      this.load();
+    })
   }
+}
+
+/** 系统路由表入口 */
+@Builder
+export function KnowledgeListPageBuilder() {
+  KnowledgeListPage()
 }

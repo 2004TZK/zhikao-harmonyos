@@ -10,9 +10,8 @@ import { promptAction } from '@kit.ArkUI';
 /**
  * 设置页（T9.5）：深色模式/提醒时间/账号注销/隐私政策/用户协议/关于。
  */
-@Entry
 @Component
-struct SettingsPage {
+export struct SettingsPage {
   @StorageProp('app_theme') theme: string = 'light';
   @State deleting: boolean = false;
 
@@ -86,69 +85,77 @@ struct SettingsPage {
   }
 
   build() {
-    Column() {
-      Text('设置')
-        .fontSize(20)
-        .fontWeight(FontWeight.Bold)
-        .width('100%')
-        .padding({ left: 16, top: 12 })
-
-      Scroll() {
-        Column() {
-          // 深色模式开关
-          Row() {
-            Column() {
-              Text('深色模式')
-                .fontSize(15)
-              Text('跟随系统或手动切换')
-                .fontSize(12)
-                .fontColor(ThemeColors.TEXT_TERTIARY)
-                .margin({ top: 2 })
+  NavDestination() {
+      Column() {
+        Text('设置')
+          .fontSize(20)
+          .fontWeight(FontWeight.Bold)
+          .width('100%')
+          .padding({ left: 16, top: 12 })
+  
+        Scroll() {
+          Column() {
+            // 深色模式开关
+            Row() {
+              Column() {
+                Text('深色模式')
+                  .fontSize(15)
+                Text('跟随系统或手动切换')
+                  .fontSize(12)
+                  .fontColor(ThemeColors.TEXT_TERTIARY)
+                  .margin({ top: 2 })
+              }
+              .alignItems(HorizontalAlign.Start)
+              .layoutWeight(1)
+  
+              Toggle({ type: ToggleType.Switch, isOn: this.theme === 'dark' })
+                .onChange((isOn: boolean) => {
+                  ThemeService.setTheme(isOn ? 'dark' : 'light');
+                  AppStore.setTheme(isOn ? 'dark' : 'light');
+                })
             }
-            .alignItems(HorizontalAlign.Start)
-            .layoutWeight(1)
-
-            Toggle({ type: ToggleType.Switch, isOn: this.theme === 'dark' })
-              .onChange((isOn: boolean) => {
-                ThemeService.setTheme(isOn ? 'dark' : 'light');
-                AppStore.setTheme(isOn ? 'dark' : 'light');
-              })
+            .width('100%')
+            .padding(14)
+            .margin({ left: 16, right: 16, top: 8 })
+            .borderRadius(10)
+            .backgroundColor(ThemeColors.CARD_BACKGROUND)
+  
+            this.SettingRow('账号注销', '删除学习数据，不可恢复', () => {
+              this.deleteAccount();
+            })
+            this.SettingRow('学习提醒', '到点提醒学习（默认 20:00）', () => {
+              NotificationService.requestPermission();
+              NotificationService.sendReminder();
+            })
+            this.SettingRow('隐私政策', '查看隐私政策', () => {
+              NavigationService.push(RouteConstants.AGREEMENT);
+            })
+            this.SettingRow('用户协议', '查看用户协议', () => {
+              NavigationService.push(RouteConstants.AGREEMENT);
+            })
+            this.SettingRow('关于知考', '版本 1.0.0', () => {
+              promptAction.showToast({ message: '知考 v1.0.0', duration: 1500 });
+            })
           }
           .width('100%')
-          .padding(14)
-          .margin({ left: 16, right: 16, top: 8 })
-          .borderRadius(10)
-          .backgroundColor(ThemeColors.CARD_BACKGROUND)
-
-          this.SettingRow('账号注销', '删除学习数据，不可恢复', () => {
-            this.deleteAccount();
-          })
-          this.SettingRow('学习提醒', '到点提醒学习（默认 20:00）', () => {
-            NotificationService.requestPermission();
-            NotificationService.sendReminder();
-          })
-          this.SettingRow('隐私政策', '查看隐私政策', () => {
-            NavigationService.push(RouteConstants.AGREEMENT);
-          })
-          this.SettingRow('用户协议', '查看用户协议', () => {
-            NavigationService.push(RouteConstants.AGREEMENT);
-          })
-          this.SettingRow('关于知考', '版本 1.0.0', () => {
-            promptAction.showToast({ message: '知考 v1.0.0', duration: 1500 });
-          })
+          .padding({ bottom: 20 })
         }
-        .width('100%')
-        .padding({ bottom: 20 })
+        .layoutWeight(1)
       }
-      .layoutWeight(1)
-    }
-    .width('100%')
-    .height('100%')
-    .backgroundColor(ThemeColors.BACKGROUND)
+      .width('100%')
+      .height('100%')
+      .backgroundColor(ThemeColors.BACKGROUND)
   }
+}
 }
 
 /** 注销请求体（契约 6.2 POST /auth/delete-account） */
 export class DeleteAccountBody {
   password: string = '';
+}
+
+/** 系统路由表入口 */
+@Builder
+export function SettingsPageBuilder() {
+  SettingsPage()
 }

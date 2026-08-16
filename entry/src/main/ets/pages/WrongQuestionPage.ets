@@ -11,9 +11,8 @@ import { EmptyView } from '../components/EmptyView';
 /**
  * 错题本页（T6.6）：错误次数/最近错误时间/再练/移出。
  */
-@Entry
 @Component
-struct WrongQuestionPage {
+export struct WrongQuestionPage {
   @State items: WrongItem[] = [];
   @State loading: boolean = true;
   @State loadError: boolean = false;
@@ -61,80 +60,88 @@ struct WrongQuestionPage {
   }
 
   build() {
-    Column() {
-      Row() {
-        Text('错题本')
-          .fontSize(20)
-          .fontWeight(FontWeight.Bold)
+  NavDestination() {
+      Column() {
+        Row() {
+          Text('错题本')
+            .fontSize(20)
+            .fontWeight(FontWeight.Bold)
+            .layoutWeight(1)
+          if (this.items.length > 0) {
+            Button('错题重练')
+              .height(36)
+              .backgroundColor(ThemeColors.SUCCESS)
+              .enabled(!this.retraining)
+              .onClick(() => {
+                this.retrain();
+              })
+          }
+        }
+        .width('100%')
+        .padding({ left: 16, right: 16, top: 12 })
+  
+        if (this.loading) {
+          LoadingView()
+        } else if (this.loadError) {
+          ErrorView({ onRetry: () => this.load() })
+        } else if (this.items.length === 0) {
+          EmptyView({ emptyText: '暂无错题，继续保持！' })
+        } else {
+          List() {
+            ForEach(this.items, (item: WrongItem) => {
+              ListItem() {
+                Column() {
+                  Text(item.content)
+                    .fontSize(14)
+                    .lineHeight(22)
+                    .width('100%')
+                  Row() {
+                    Text(`错误 ${item.wrongCount} 次`)
+                      .fontSize(12)
+                      .fontColor(ThemeColors.DANGER)
+                    Text(` · ${this.formatTime(item.lastWrongTime)}`)
+                      .fontSize(12)
+                      .fontColor(ThemeColors.TEXT_TERTIARY)
+                      .margin({ left: 8 })
+                    Blank()
+                    Text('移出')
+                      .fontSize(12)
+                      .fontColor(ThemeColors.TEXT_SECONDARY)
+                      .onClick(() => {
+                        this.removeItem(item.wrongId);
+                      })
+                  }
+                  .width('100%')
+                  .margin({ top: 8 })
+                }
+                .width('100%')
+                .padding(14)
+                .margin({ left: 16, right: 16, top: 10 })
+                .borderRadius(10)
+                .backgroundColor(ThemeColors.CARD_BACKGROUND)
+              }
+            }, (item: WrongItem) => item.wrongId.toString())
+          }
           .layoutWeight(1)
-        if (this.items.length > 0) {
-          Button('错题重练')
-            .height(36)
-            .backgroundColor(ThemeColors.SUCCESS)
-            .enabled(!this.retraining)
-            .onClick(() => {
-              this.retrain();
-            })
+          .width('100%')
+          .scrollBar(BarState.Off)
         }
       }
       .width('100%')
-      .padding({ left: 16, right: 16, top: 12 })
-
-      if (this.loading) {
-        LoadingView()
-      } else if (this.loadError) {
-        ErrorView({ onRetry: () => this.load() })
-      } else if (this.items.length === 0) {
-        EmptyView({ emptyText: '暂无错题，继续保持！' })
-      } else {
-        List() {
-          ForEach(this.items, (item: WrongItem) => {
-            ListItem() {
-              Column() {
-                Text(item.content)
-                  .fontSize(14)
-                  .lineHeight(22)
-                  .width('100%')
-                Row() {
-                  Text(`错误 ${item.wrongCount} 次`)
-                    .fontSize(12)
-                    .fontColor(ThemeColors.DANGER)
-                  Text(` · ${this.formatTime(item.lastWrongTime)}`)
-                    .fontSize(12)
-                    .fontColor(ThemeColors.TEXT_TERTIARY)
-                    .margin({ left: 8 })
-                  Blank()
-                  Text('移出')
-                    .fontSize(12)
-                    .fontColor(ThemeColors.TEXT_SECONDARY)
-                    .onClick(() => {
-                      this.removeItem(item.wrongId);
-                    })
-                }
-                .width('100%')
-                .margin({ top: 8 })
-              }
-              .width('100%')
-              .padding(14)
-              .margin({ left: 16, right: 16, top: 10 })
-              .borderRadius(10)
-              .backgroundColor(ThemeColors.CARD_BACKGROUND)
-            }
-          }, (item: WrongItem) => item.wrongId.toString())
-        }
-        .layoutWeight(1)
-        .width('100%')
-        .scrollBar(BarState.Off)
-      }
-    }
-    .width('100%')
-    .height('100%')
-    .backgroundColor(ThemeColors.BACKGROUND)
+      .height('100%')
+      .backgroundColor(ThemeColors.BACKGROUND)
   }
+}
 }
 
 /** 分页响应 */
 export class PageData<T> {
   records: T[] = [];
   total: number = 0;
+}
+
+/** 系统路由表入口 */
+@Builder
+export function WrongQuestionPageBuilder() {
+  WrongQuestionPage()
 }

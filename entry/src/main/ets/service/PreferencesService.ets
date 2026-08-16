@@ -8,6 +8,7 @@ import { common } from '@kit.AbilityKit';
 export class PreferencesService {
   private static instance: PreferencesService = new PreferencesService();
   private pref: preferences.Preferences | undefined = undefined;
+  private readyPromise: Promise<void> | undefined = undefined;
   private readonly STORE_NAME: string = 'zhikao_preferences';
 
   private constructor() {
@@ -18,9 +19,23 @@ export class PreferencesService {
   }
 
   /** 初始化（在 EntryAbility.onCreate 调用一次） */
-  async init(context: common.UIAbilityContext): Promise<void> {
-    if (this.pref === undefined) {
-      this.pref = await preferences.getPreferences(context, this.STORE_NAME);
+  init(context: common.UIAbilityContext): Promise<void> {
+    if (this.readyPromise === undefined) {
+      this.readyPromise = preferences.getPreferences(context, this.STORE_NAME).then((p) => {
+        this.pref = p;
+      });
+    }
+    return this.readyPromise;
+  }
+
+  /** 等待初始化完成（页面启动流程使用，避免竞态） */
+  async whenReady(): Promise<void> {
+    if (this.pref !== undefined) {
+      return;
+    }
+    // 等待 init 的 promise（若尚未调用 init，则抛错由调用方处理）
+    if (this.readyPromise !== undefined) {
+      await this.readyPromise;
     }
   }
 

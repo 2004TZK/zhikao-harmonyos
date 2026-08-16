@@ -11,9 +11,8 @@ import { EmptyView } from '../components/EmptyView';
  * 常识分类页（T5.3）。
  * 展示 9 大分类，含各分类知识点数与已掌握数。
  */
-@Entry
 @Component
-struct KnowledgeCategoryPage {
+export struct KnowledgeCategoryPage {
   @State categories: KnowledgeCategoryItem[] = [];
   @State loading: boolean = true;
   @State loadError: boolean = false;
@@ -73,34 +72,42 @@ struct KnowledgeCategoryPage {
   }
 
   build() {
-    Column() {
-      Text('常识')
-        .fontSize(20)
-        .fontWeight(FontWeight.Bold)
-        .width('100%')
-        .padding({ left: 16, top: 12 })
-
-      if (this.loading) {
-        LoadingView()
-      } else if (this.loadError) {
-        ErrorView({ onRetry: () => this.load() })
-      } else if (this.categories.length === 0) {
-        EmptyView({ emptyText: '暂无常识分类' })
-      } else {
-        List() {
-          ForEach(this.categories, (item: KnowledgeCategoryItem) => {
-            ListItem() {
-              this.CategoryCard(item)
-            }
-          }, (item: KnowledgeCategoryItem) => item.id.toString())
+  NavDestination() {
+      Column() {
+        Text('常识')
+          .fontSize(20)
+          .fontWeight(FontWeight.Bold)
+          .width('100%')
+          .padding({ left: 16, top: 12 })
+  
+        if (this.loading) {
+          LoadingView()
+        } else if (this.loadError) {
+          ErrorView({ onRetry: () => this.load() })
+        } else if (this.categories.length === 0) {
+          EmptyView({ emptyText: '暂无常识分类' })
+        } else {
+          List() {
+            ForEach(this.categories, (item: KnowledgeCategoryItem) => {
+              ListItem() {
+                this.CategoryCard(item)
+              }
+            }, (item: KnowledgeCategoryItem) => item.id.toString())
+          }
+          .layoutWeight(1)
+          .width('100%')
+          .scrollBar(BarState.Off)
         }
-        .layoutWeight(1)
-        .width('100%')
-        .scrollBar(BarState.Off)
       }
-    }
-    .width('100%')
-    .height('100%')
-    .backgroundColor(ThemeColors.BACKGROUND)
+      .width('100%')
+      .height('100%')
+      .backgroundColor(ThemeColors.BACKGROUND)
   }
+}
+}
+
+/** 系统路由表入口 */
+@Builder
+export function KnowledgeCategoryPageBuilder() {
+  KnowledgeCategoryPage()
 }

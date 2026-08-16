@@ -29,6 +29,18 @@ export class HttpClient {
     return HttpClient.request<T>(path, options);
   }
 
+  /**
+   * 公开接口 POST（登录/注册/游客等无需 Token 的接口）。
+   * 避免携带旧 Access Token 导致服务端按无效凭证拒绝（T4.2 修复）。
+   */
+  static async postPublic<T>(path: string, body: Object): Promise<ApiResponse<T>> {
+    const options = new RequestOptions();
+    options.method = 'POST';
+    options.body = body;
+    options.needAuth = false;
+    return HttpClient.request<T>(path, options);
+  }
+
   /** 统一 PUT JSON */
   static async put<T>(path: string, body: Object): Promise<ApiResponse<T>> {
     const options = new RequestOptions();

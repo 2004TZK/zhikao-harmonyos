@@ -10,9 +10,8 @@ import { GuestClientService } from '../service/GuestClientService';
  * 登录页（T4.2：对接 /auth/login）。
  * 成功：保存双 Token 与用户信息 → 标记登录态 → 返回（onPop 触发 pushAuth 继续跳转）。
  */
-@Entry
 @Component
-struct LoginPage {
+export struct LoginPage {
   @State username: string = '';
   @State password: string = '';
   @State loading: boolean = false;
@@ -30,7 +29,7 @@ struct LoginPage {
     body.username = this.username.trim();
     body.password = this.password;
 
-    const response = await HttpClient.post<LoginResponseData>('/auth/login', body);
+    const response = await HttpClient.postPublic<LoginResponseData>('/auth/login', body);
     if (response.code === 0 && response.data !== null) {
       const data = response.data;
       // 保存 Token 与用户信息
@@ -39,8 +38,8 @@ struct LoginPage {
       // 全局 store
       AppStore.setLogin(data.userId, data.username, data.nickname, data.userType);
       NavigationService.setLoggedIn(true);
-      // 返回上一页（由 pushAuth 的 onPop 回调继续跳转目标页）
-      NavigationService.back();
+      // 登录成功：清空导航栈并进入主容器（T4.2 路由修复）
+      NavigationService.resetToMain();
     } else {
       this.errorMsg = response.message;
     }
@@ -59,72 +58,74 @@ struct LoginPage {
   }
 
   build() {
-    Column() {
-      Text('知考')
-        .fontSize(32)
-        .fontWeight(FontWeight.Bold)
-        .fontColor(ThemeColors.PRIMARY)
-        .margin({ top: 80, bottom: 40 })
-
-      TextInput({ placeholder: '用户名', text: this.username })
-        .width('80%')
-        .height(48)
-        .margin({ bottom: 16 })
-        .onChange((value: string) => {
-          this.username = value;
-        })
-
-      TextInput({ placeholder: '密码', text: this.password })
-        .width('80%')
-        .height(48)
-        .margin({ bottom: 8 })
-        .type(InputType.Password)
-        .onChange((value: string) => {
-          this.password = value;
-        })
-
-      if (this.errorMsg !== '') {
-        Text(this.errorMsg)
-          .fontSize(13)
-          .fontColor(ThemeColors.DANGER)
-          .margin({ top: 4, bottom: 4 })
-      }
-
-      Button(this.loading ? '登录中...' : '登录')
-        .width('80%')
-        .height(48)
-        .margin({ top: 16 })
-        .enabled(!this.loading)
-        .onClick(() => {
-          this.doLogin();
-        })
-
-      Row() {
-        Text('没有账号？')
-          .fontSize(14)
-          .fontColor(ThemeColors.TEXT_SECONDARY)
-        Text('去注册')
-          .fontSize(14)
+  NavDestination() {
+      Column() {
+        Text('知考')
+          .fontSize(32)
+          .fontWeight(FontWeight.Bold)
           .fontColor(ThemeColors.PRIMARY)
+          .margin({ top: 80, bottom: 40 })
+  
+        TextInput({ placeholder: '用户名', text: this.username })
+          .width('80%')
+          .height(48)
+          .margin({ bottom: 16 })
+          .onChange((value: string) => {
+            this.username = value;
+          })
+  
+        TextInput({ placeholder: '密码', text: this.password })
+          .width('80%')
+          .height(48)
+          .margin({ bottom: 8 })
+          .type(InputType.Password)
+          .onChange((value: string) => {
+            this.password = value;
+          })
+  
+        if (this.errorMsg !== '') {
+          Text(this.errorMsg)
+            .fontSize(13)
+            .fontColor(ThemeColors.DANGER)
+            .margin({ top: 4, bottom: 4 })
+        }
+  
+        Button(this.loading ? '登录中...' : '登录')
+          .width('80%')
+          .height(48)
+          .margin({ top: 16 })
+          .enabled(!this.loading)
           .onClick(() => {
-            NavigationService.push(RouteConstants.REGISTER);
+            this.doLogin();
+          })
+  
+        Row() {
+          Text('没有账号？')
+            .fontSize(14)
+            .fontColor(ThemeColors.TEXT_SECONDARY)
+          Text('去注册')
+            .fontSize(14)
+            .fontColor(ThemeColors.PRIMARY)
+            .onClick(() => {
+              NavigationService.push(RouteConstants.REGISTER);
+            })
+        }
+        .margin({ top: 24 })
+  
+        Text('游客体验（每日限 5 个详情 + 5 道题）')
+          .fontSize(14)
+          .fontColor(ThemeColors.TEXT_TERTIARY)
+          .margin({ top: 32 })
+          .onClick(() => {
+            this.enterAsGuest();
           })
       }
-      .margin({ top: 24 })
-
-      Text('游客体验（每日限 5 个详情 + 5 道题）')
-        .fontSize(14)
-        .fontColor(ThemeColors.TEXT_TERTIARY)
-        .margin({ top: 32 })
-        .onClick(() => {
-          this.enterAsGuest();
-        })
-    }
-    .width('100%')
-    .height('100%')
-    .alignItems(HorizontalAlign.Center)
-    .backgroundColor(Color.White)
+      .width('100%')
+      .height('100%')
+      .alignItems(HorizontalAlign.Center)
+      .backgroundColor(Color.White)
   }
+}
 }
 
 /** 登录请求（契约 6.2） */
@@ -142,4 +143,10 @@ export class LoginResponseData {
   username: string = '';
   nickname: string = '';
   userType: number = 0;
+}
+
+/** 系统路由表入口 */
+@Builder
+export function LoginPageBuilder() {
+  LoginPage()
 }

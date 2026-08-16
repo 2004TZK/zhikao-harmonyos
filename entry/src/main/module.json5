@@ -11,6 +11,9 @@
     "installationFree": false,
     "requestPermissions": [
       {
+        "name": "ohos.permission.INTERNET"
+      },
+      {
         "name": "ohos.permission.NOTIFICATION_CONTROLLER",
         "reason": "$string:notification_reason",
         "usedScene": {
@@ -22,6 +25,7 @@
       }
     ],
     "pages": "$profile:main_pages",
+    "routerMap": "$profile:route_map",
     "abilities": [
       {
         "name": "EntryAbility",
