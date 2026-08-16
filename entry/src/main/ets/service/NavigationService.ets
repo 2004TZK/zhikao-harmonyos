@@ -1,28 +1,30 @@
 import { RouterManager } from './RouterManager';
 import { RouteConstants } from '../constants/RouteConstants';
+import { AppStore } from '../store/AppStore';
 
 /**
- * 统一路由服务（T1.3）。
+ * 统一路由服务（T1.3/T4.1）。
  *
  * <p>业务页面跳转的唯一入口：内部封装 RouterManager 与登录守卫。
  *  - push：压栈跳转
  *  - pushAuth：访问受保护页面，未登录时跳转登录页（登录成功后返回原页面）
  *  - replace / back / resetToMain 等基础操作
  *
- * <p>登录态判断暂时使用 mock（T1.3 阶段），T1.7 全局 store 落地后接入 AppStorage。
+ * <p>登录态以 AppStore（AppStorage）为准，setLoggedIn 同步写入 store。
  */
 export class NavigationService {
 
-  /** mock：当前是否已登录（T1.3 占位，T1.7 接入真实 store） */
-  private static loggedIn: boolean = false;
-
-  /** 注入登录态（由登录页/启动页在真实流程中调用，T1.7 后由 store 驱动） */
+  /** 注入登录态（登录/登出时调用，同步 AppStore） */
   static setLoggedIn(value: boolean): void {
-    NavigationService.loggedIn = value;
+    if (value) {
+      // 已由调用方写入用户信息，仅确保标记
+    } else {
+      AppStore.setLogout();
+    }
   }
 
   static isLoggedIn(): boolean {
-    return NavigationService.loggedIn;
+    return AppStore.isLoggedIn();
   }
 
   /** 普通跳转 */

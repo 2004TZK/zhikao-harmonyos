@@ -1,5 +1,5 @@
 import { http } from '@kit.NetworkKit';
-import { HttpConstants, ApiResponse } from '../constants/HttpConstants';
+import { HttpConstants, AuthApi, ApiResponse } from '../constants/HttpConstants';
 import { TokenService } from './TokenService';
 import { NavigationService } from './NavigationService';
 import { RequestOptions } from '../types/RequestOptions';
@@ -132,8 +132,10 @@ export class HttpClient {
     const options = new RequestOptions();
     options.method = 'POST';
     options.needAuth = false;
-    options.body = { refreshToken: refreshToken };
-    const response = await HttpClient.send<Object>(HttpConstants.AuthApi.REFRESH, options, false);
+    const body = new RefreshRequest();
+    body.refreshToken = refreshToken;
+    options.body = body;
+    const response = await HttpClient.send<Object>(AuthApi.REFRESH, options, false);
     if (response.code === 0 && response.data !== null) {
       const data = response.data as RefreshTokenResponse;
       await TokenService.saveTokens(data.accessToken, data.refreshToken);
@@ -151,4 +153,9 @@ export class RefreshTokenResponse {
   userId: number = 0;
   username: string = '';
   userType: number = 0;
+}
+
+/** refresh 请求结构（契约 6.2 POST /auth/refresh） */
+export class RefreshRequest {
+  refreshToken: string = '';
 }
