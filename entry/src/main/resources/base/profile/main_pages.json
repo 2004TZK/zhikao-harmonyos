@@ -12,6 +12,9 @@
     "pages/IdiomCategoryPage",
     "pages/IdiomListPage",
     "pages/IdiomDetailPage",
-    "pages/FavoritePage"
+    "pages/FavoritePage",
+    "pages/AnswerPage",
+    "pages/AnswerResultPage",
+    "pages/WrongQuestionPage"
   ]
 }

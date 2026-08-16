@@ -1,10 +1,9 @@
 import { HomePage } from './HomePage';
 import { StudyPage } from './StudyPage';
-import { PracticePage } from './PracticePage';
+import { NavigationService } from '../service/NavigationService';
+import { RouteConstants } from '../constants/RouteConstants';
 import { ReviewPage } from './ReviewPage';
 import { MinePage } from './MinePage';
-import { RouteConstants } from '../constants/RouteConstants';
-import { NavigationService } from '../service/NavigationService';
 
 /**
  * 主容器（T1.4）：底部导航 TabBar（首页/学习/练习/复习/我的）。
@@ -42,7 +41,25 @@ struct MainPage {
       .tabBar(this.TabBuilder('学习', 1))
 
       TabContent() {
-        PracticePage()
+        Column() {
+          Text('练习')
+            .fontSize(20)
+            .fontWeight(FontWeight.Bold)
+            .margin({ top: 40 })
+          Text('每日挑战 / 专项训练 / 随机训练')
+            .fontSize(13)
+            .fontColor('#999999')
+            .margin({ top: 12 })
+          Button('进入练习')
+            .width(140)
+            .margin({ top: 32 })
+            .onClick(() => {
+              NavigationService.push(RouteConstants.PRACTICE);
+            })
+        }
+        .width('100%')
+        .height('100%')
+        .backgroundColor(Color.White)
       }
       .tabBar(this.TabBuilder('练习', 2))
 
